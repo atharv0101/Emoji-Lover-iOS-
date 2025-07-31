@@ -1,47 +1,61 @@
 import SwiftUI
-import AVFoundation
 
 struct LearningCategoryView: View {
     let title: String
     let items: [LearningItem]
-    @State private var currentIndex = 0
-    @State private var isSpeaking = false
 
+    @State private var shuffledItems: [LearningItem] = []
+    @State private var currentIndex: Int = 0
+    @State private var isSpeaking: Bool = false
 
     var body: some View {
         VStack(spacing: 30) {
-            Text(items[currentIndex].emoji)
-                .font(.system(size: 150))
-
-            Text(items[currentIndex].name)
+            Text(title)
                 .font(.largeTitle)
                 .bold()
 
-            Button("🔊 Speak") {
-                isSpeaking = true
-                SpeechHelper.shared.onSpeechDidFinish = {
-                    isSpeaking = false
-                }
-                SpeechHelper.shared.speak(items[currentIndex].name)
-            }
-            .disabled(isSpeaking)  // disables button while speaking
-            .opacity(isSpeaking ? 0.5 : 1.0)  // visual feedback
+            if !shuffledItems.isEmpty {
+                Text(shuffledItems[currentIndex].emoji)
+                    .font(.system(size: 100))
 
+                Text(shuffledItems[currentIndex].name)
+                    .font(.title)
 
+                HStack(spacing: 30) {
+                    Button(action: {
+                        currentIndex = (currentIndex - 1 + shuffledItems.count) % shuffledItems.count
+                    }) {
+                        Image(systemName: "chevron.left.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                    }
 
-            HStack {
-                Button("◀️") {
-                    if currentIndex > 0 {
-                        currentIndex -= 1
+                    Button(action: {
+                        if !isSpeaking {
+                            isSpeaking = true
+                            SpeechHelper.shared.speak(shuffledItems[currentIndex].name) {
+                                isSpeaking = false
+                            }
+                        }
+                    }) {
+                        Image(systemName: "speaker.wave.2.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                    }
+
+                    Button(action: {
+                        currentIndex = (currentIndex + 1) % shuffledItems.count
+                    }) {
+                        Image(systemName: "chevron.right.circle.fill")
+                            .resizable()
+                            .frame(width: 50, height: 50)
                     }
                 }
-
-                Button("▶️") {
-                    if currentIndex < items.count - 1 {
-                        currentIndex += 1
-                    }
-                }
             }
+        }
+        .onAppear {
+            shuffledItems = items.shuffled()
+            currentIndex = 0
         }
         .padding()
     }

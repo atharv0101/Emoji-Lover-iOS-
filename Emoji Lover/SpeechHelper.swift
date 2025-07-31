@@ -5,14 +5,14 @@ class SpeechHelper: NSObject, AVSpeechSynthesizerDelegate {
     private let synthesizer = AVSpeechSynthesizer()
 
     var isSpeaking: Bool = false
-    var onSpeechDidFinish: (() -> Void)?  // callback
+    private var completionHandler: (() -> Void)?  // store completion
 
     private override init() {
         super.init()
         synthesizer.delegate = self
     }
 
-    func speak(_ text: String) {
+    func speak(_ text: String, completion: (() -> Void)? = nil) {
         guard !synthesizer.isSpeaking else {
             return  // prevent overlapping speech
         }
@@ -20,12 +20,14 @@ class SpeechHelper: NSObject, AVSpeechSynthesizerDelegate {
         let utterance = AVSpeechUtterance(string: text)
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
         isSpeaking = true
+        completionHandler = completion  // store the closure
         synthesizer.speak(utterance)
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         isSpeaking = false
-        onSpeechDidFinish?()
+        completionHandler?()      // call the stored closure
+        completionHandler = nil   // clear it after use
     }
 }
 
