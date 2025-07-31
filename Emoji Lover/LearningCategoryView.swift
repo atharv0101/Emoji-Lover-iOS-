@@ -1,10 +1,4 @@
-//
-//  Untitled.swift
-//  Emoji Lover
-//
-//  Created by Atharv Maheshwari on 31/07/25.
-//
-
+import SwiftUI
 import AVFoundation
 
 struct LearningCategoryView: View {
@@ -29,14 +23,19 @@ struct LearningCategoryView: View {
 
             HStack {
                 Button("◀️") {
-                    if currentIndex > 0 { currentIndex -= 1 }
+                    if currentIndex > 0 {
+                        currentIndex -= 1
+                    }
                 }
 
                 Button("▶️") {
-                    if currentIndex < items.count - 1 { currentIndex += 1 }
+                    if currentIndex < items.count - 1 {
+                        currentIndex += 1
+                    }
                 }
             }
         }
         .padding()
     }
 }
+

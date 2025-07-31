@@ -6,33 +6,29 @@
 //
 
 import SwiftUI
-
-enum Emoji: String, CaseIterable{
-    case 🥰, 💰, 💪🏼, 💗
-}
-
+import AVFoundation
 struct ContentView: View{
-    @State var selection : Emoji = .💪🏼
-    
     var body: some View {
-        NavigationView{
-            VStack {
-                Text(selection.rawValue)
-                    .font(.system(size: 150))
-                
-                Picker("Select Emoji", selection: $selection) {
-                    ForEach(Emoji.allCases, id: \.self) {
-                        emoji in Text(emoji.rawValue)
-                    }
+        TabView {
+                    LearningCategoryView(title: "Fruits", items: fruits)
+                        .tabItem {
+                            Label("Fruits", systemImage: "applelogo")
+                        }
+
+                    LearningCategoryView(title: "Vegetables", items: vegetables)
+                        .tabItem {
+                            Label("Veggies", systemImage: "leaf")
+                        }
+
+                    LearningCategoryView(title: "Animals", items: animals)
+                        .tabItem {
+                            Label("Animals", systemImage: "pawprint.fill")
+                        }
                 }
-                .pickerStyle(.segmented) //this displays all emojis in a row
-            }
-            .navigationTitle("Emojis") //adds title to the screen
-            .padding(50)
             
         }
     }
-}
+
     #Preview{
         ContentView()
     }
