@@ -1,34 +1,34 @@
- //
-//  ContentView.swift
-//  Emoji Lover
-//
-//  Created by Atharv Maheshwari on 31/07/25.
-//
-
 import SwiftUI
 import AVFoundation
-struct ContentView: View{
+
+struct ContentView: View {
     var body: some View {
         TabView {
-                    LearningCategoryView(title: "Fruits", items: fruits)
-                        .tabItem {
-                            Label("Fruits", systemImage: "applelogo")
-                        }
+            LearningCategoryView(title: "Fruits", items: fruits)
+                .tabItem {
+                    Label("Fruits", systemImage: "applelogo")
+                }
 
-                    LearningCategoryView(title: "Vegetables", items: vegetables)
-                        .tabItem {
-                            Label("Veggies", systemImage: "leaf")
-                        }
+            LearningCategoryView(title: "Vegetables", items: vegetables)
+                .tabItem {
+                    Label("Veggies", systemImage: "leaf")
+                }
 
-                    LearningCategoryView(title: "Animals", items: animals)
-                        .tabItem {
-                            Label("Animals", systemImage: "pawprint.fill")
-                        }
+            LearningCategoryView(title: "Animals", items: animals)
+                .tabItem {
+                    Label("Animals", systemImage: "pawprint.fill")
                 }
             
+            // Add the SettingsView as a new tab
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
+        
         }
     }
+}
 
-    #Preview{
-        ContentView()
-    }
+#Preview {
+    ContentView()
+}

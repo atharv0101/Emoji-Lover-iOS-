@@ -5,29 +5,29 @@ class SpeechHelper: NSObject, AVSpeechSynthesizerDelegate {
     private let synthesizer = AVSpeechSynthesizer()
 
     var isSpeaking: Bool = false
-    private var completionHandler: (() -> Void)?  // store completion
+    var onSpeechDidFinish: (() -> Void)?
 
     private override init() {
         super.init()
         synthesizer.delegate = self
     }
 
-    func speak(_ text: String, completion: (() -> Void)? = nil) {
-        guard !synthesizer.isSpeaking else {
-            return  // prevent overlapping speech
-        }
-
+    func speak(_ text: String) {
+        guard !synthesizer.isSpeaking else { return }
+        
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        let settings = SpeechSettings.shared
+        
+        utterance.voice = AVSpeechSynthesisVoice(identifier: settings.voiceIdentifier) ?? AVSpeechSynthesisVoice(language: "en-US")
+        // --- CORRECTED LINE ---
+        utterance.rate = Float(settings.rate) // Convert Double to Float here
+
         isSpeaking = true
-        completionHandler = completion  // store the closure
         synthesizer.speak(utterance)
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         isSpeaking = false
-        completionHandler?()      // call the stored closure
-        completionHandler = nil   // clear it after use
+        onSpeechDidFinish?()
     }
 }
-
