@@ -1,18 +1,18 @@
-
-//
-//  Learning.swift
-//  Emoji Lover
-//
-//  Created by Atharv Maheshwari on 31/07/25.
-//
-
 import Foundation
-import AVFoundation
 
+// LearningItem must be defined FIRST...
 struct LearningItem: Identifiable {
     let id = UUID()
     let emoji: String
     let name: String
+}
+
+// ...so that LearningCategory can use it.
+struct LearningCategory: Identifiable {
+    let id = UUID()
+    let title: String
+    let icon: String
+    let items: [LearningItem]
 }
 
 // 🍎 Fruits
@@ -31,7 +31,6 @@ let fruits: [LearningItem] = [
     LearningItem(emoji: "🍉", name: "Watermelon")
 ]
 
-
 // 🥦 Vegetables
 let vegetables: [LearningItem] = [
     LearningItem(emoji: "🥑", name: "Avocado"),
@@ -44,7 +43,6 @@ let vegetables: [LearningItem] = [
     LearningItem(emoji: "🥔", name: "Potato"),
     LearningItem(emoji: "🍅", name: "Tomato")
 ]
-
 
 // 🐶 Animals
 let animals: [LearningItem] = [
@@ -62,3 +60,49 @@ let animals: [LearningItem] = [
     LearningItem(emoji: "🐇", name: "Rabbit")
 ]
 
+// 🔢 Numbers
+let numbers: [LearningItem] = [
+    LearningItem(emoji: "1️⃣", name: "One"),
+    LearningItem(emoji: "2️⃣", name: "Two"),
+    LearningItem(emoji: "3️⃣", name: "Three"),
+    LearningItem(emoji: "4️⃣", name: "Four"),
+    LearningItem(emoji: "5️⃣", name: "Five"),
+    LearningItem(emoji: "6️⃣", name: "Six"),
+    LearningItem(emoji: "7️⃣", name: "Seven"),
+    LearningItem(emoji: "8️⃣", name: "Eight"),
+    LearningItem(emoji: "9️⃣", name: "Nine"),
+    LearningItem(emoji: "🔟", name: "Ten")
+]
+
+// 🔶 Shapes
+let shapes: [LearningItem] = [
+    LearningItem(emoji: "🔴", name: "Circle"),
+    LearningItem(emoji: "🔵", name: "Square"),
+    LearningItem(emoji: "🔺", name: "Triangle"),
+    LearningItem(emoji: "⭐", name: "Star"),
+    LearningItem(emoji: "❤️", name: "Heart"),
+    LearningItem(emoji: "♦️", name: "Diamond")
+]
+
+// 🎨 Colors
+let colors: [LearningItem] = [
+    LearningItem(emoji: "❤️", name: "Red"),
+    LearningItem(emoji: "🧡", name: "Orange"),
+    LearningItem(emoji: "💛", name: "Yellow"),
+    LearningItem(emoji: "💚", name: "Green"),
+    LearningItem(emoji: "💙", name: "Blue"),
+    LearningItem(emoji: "💜", name: "Purple"),
+    LearningItem(emoji: "🖤", name: "Black"),
+    LearningItem(emoji: "🤍", name: "White"),
+    LearningItem(emoji: "🤎", name: "Brown")
+]
+
+// The master list of all categories
+let allCategories: [LearningCategory] = [
+    LearningCategory(title: "Fruits", icon: "🍎", items: fruits),
+    LearningCategory(title: "Animals", icon: "🐶", items: animals),
+    LearningCategory(title: "Numbers", icon: "🔢", items: numbers),
+    LearningCategory(title: "Shapes", icon: "🔶", items: shapes),
+    LearningCategory(title: "Colors", icon: "🎨", items: colors),
+    LearningCategory(title: "Vegetables", icon: "🥦", items: vegetables)
+]

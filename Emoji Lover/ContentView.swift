@@ -1,34 +1,25 @@
 import SwiftUI
-import AVFoundation
 
 struct ContentView: View {
     var body: some View {
         TabView {
-            LearningCategoryView(title: "Fruits", items: fruits)
+            // The "Learn" tab now shows our new category grid screen.
+            CategoriesView()
                 .tabItem {
-                    Label("Fruits", systemImage: "applelogo")
+                    Label("Learn", systemImage: "book.fill")
                 }
 
-            LearningCategoryView(title: "Vegetables", items: vegetables)
-                .tabItem {
-                    Label("Veggies", systemImage: "leaf")
-                }
-
-            LearningCategoryView(title: "Animals", items: animals)
-                .tabItem {
-                    Label("Animals", systemImage: "pawprint.fill")
-                }
-            
-            // Add the SettingsView as a new tab
+            // The "Settings" tab remains the same.
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
-        
         }
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }
