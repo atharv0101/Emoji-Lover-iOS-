@@ -1,14 +1,7 @@
-//
-//  CategoriesView.swift
-//  Emoji Lover
-//
-//  Created by Atharv Maheshwari on 31/07/25.
-//
-
 import SwiftUI
 
 struct CategoriesView: View {
-    // Define the grid layout: 2 columns, with spacing.
+    // Defines the 2-column grid layout
     let columns: [GridItem] = [
         GridItem(.flexible(), spacing: 20),
         GridItem(.flexible(), spacing: 20)
@@ -17,26 +10,24 @@ struct CategoriesView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                // The LazyVGrid creates our grid layout.
                 LazyVGrid(columns: columns, spacing: 20) {
-                    // Loop through all the categories we defined earlier.
                     ForEach(allCategories) { category in
-                        // Each category is a link to the learning screen.
+                        // Use a standard NavigationLink for the slide-in transition
                         NavigationLink(destination: LearningCategoryView(title: category.title, items: category.items)) {
                             CategoryCardView(icon: category.icon, title: category.title)
                         }
+                        .buttonStyle(GrowButtonStyle())
                     }
                 }
                 .padding()
             }
             .navigationTitle("Learn")
         }
-        // Use the stack style for standard push navigation.
         .navigationViewStyle(.stack)
     }
 }
 
-// It's good practice to create a separate view for the card's design.
+// Defines the visual design of each card in the grid
 struct CategoryCardView: View {
     let icon: String
     let title: String
@@ -48,12 +39,21 @@ struct CategoryCardView: View {
             Text(title)
                 .font(.headline)
                 .fontWeight(.bold)
-                .foregroundColor(.primary) // Adapts to light/dark mode
+                .foregroundColor(.primary)
         }
         .padding()
         .frame(maxWidth: .infinity, minHeight: 150)
-        .background(Color.primary.opacity(0.05)) // A subtle background
+        .background(Color.primary.opacity(0.05))
         .cornerRadius(20)
+    }
+}
+
+// Defines the "grow on tap" animation style for the buttons
+struct GrowButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 1.1 : 1.0)
+            .animation(.spring(response: 0.4, dampingFraction: 0.6), value: configuration.isPressed)
     }
 }
 
@@ -62,3 +62,4 @@ struct CategoriesView_Previews: PreviewProvider {
         CategoriesView()
     }
 }
+
