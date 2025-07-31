@@ -5,6 +5,8 @@ struct LearningCategoryView: View {
     let title: String
     let items: [LearningItem]
     @State private var currentIndex = 0
+    @State private var isSpeaking = false
+
 
     var body: some View {
         VStack(spacing: 30) {
@@ -16,10 +18,16 @@ struct LearningCategoryView: View {
                 .bold()
 
             Button("🔊 Speak") {
-                let utterance = AVSpeechUtterance(string: items[currentIndex].name)
-                utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-                AVSpeechSynthesizer().speak(utterance)
+                isSpeaking = true
+                SpeechHelper.shared.onSpeechDidFinish = {
+                    isSpeaking = false
+                }
+                SpeechHelper.shared.speak(items[currentIndex].name)
             }
+            .disabled(isSpeaking)  // disables button while speaking
+            .opacity(isSpeaking ? 0.5 : 1.0)  // visual feedback
+
+
 
             HStack {
                 Button("◀️") {
