@@ -1,4 +1,4 @@
-//
+ //
 //  ContentView.swift
 //  Emoji Lover
 //
@@ -13,7 +13,7 @@ struct ContentView: View {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("Updated Project")
         }
         .padding()
     }
