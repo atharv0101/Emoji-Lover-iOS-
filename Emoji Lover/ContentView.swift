@@ -3,18 +3,16 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         TabView {
-            // The "Learn" tab shows our category grid screen.
             CategoriesView()
-                .tabItem {
-                    Label("Learn", systemImage: "book.fill")
-                }
+                .tabItem { Label("Learn", systemImage: "book.fill") }
 
-            // The "Settings" tab shows the settings screen.
+            TestGamesView()
+                .tabItem { Label("Test", systemImage: "gamecontroller.fill") }
+
             SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gear")
-                }
+                .tabItem { Label("Settings", systemImage: "gear") }
         }
+        // The .onAppear modifier that was here has been REMOVED.
     }
 }
 
@@ -23,4 +21,3 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
-
