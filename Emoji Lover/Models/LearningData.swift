@@ -78,7 +78,7 @@ let numbers: [LearningItem] = [
 // 🔶 Shapes
 let shapes: [LearningItem] = [
     LearningItem(emoji: "🔴", name: "Circle"),
-    LearningItem(emoji: "🔵", name: "Square"),
+    LearningItem(emoji: "◻️", name: "Square"),
     LearningItem(emoji: "🔺", name: "Triangle"),
     LearningItem(emoji: "⭐", name: "Star"),
     LearningItem(emoji: "❤️", name: "Heart"),

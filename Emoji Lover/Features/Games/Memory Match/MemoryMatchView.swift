@@ -7,7 +7,6 @@ struct MemoryMatchView: View {
     
     @Environment(\.presentationMode) var presentationMode
     
-    // Defines the grid layout based on the selected difficulty
     var columns: [GridItem] {
         switch difficulty {
         case .easy:
@@ -19,7 +18,6 @@ struct MemoryMatchView: View {
         }
     }
     
-    // Define padding based on difficulty to control card size
     private var gridPadding: CGFloat {
         switch difficulty {
         case .easy: return 40
@@ -37,36 +35,30 @@ struct MemoryMatchView: View {
 
     var body: some View {
         ZStack {
-            // Check if the game is over to show the correct view
             if viewModel.isGameOver {
                 GameCompletionView(
                     moveCount: viewModel.moveCount,
                     starRating: viewModel.starRating,
                     onPlayAgain: {
-                        // Restart the game with the same settings
                         viewModel.createMemoryGame(from: category, difficulty: difficulty)
                     },
                     onChooseAnother: {
-                        // Go back to the game selection screen
                         presentationMode.wrappedValue.dismiss()
                     }
                 )
                 .transition(.scale.combined(with: .opacity))
                 
             } else {
-                // The main game board view
                 VStack {
                     Text("Moves: \(viewModel.moveCount)")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .padding(.top)
+                        .font(.title2).fontWeight(.semibold).padding(.top)
                     
                     LazyVGrid(columns: columns, spacing: 15) {
                         ForEach(viewModel.cards.indices, id: \.self) { index in
                             if !shuffledCardColors.isEmpty {
                                 CardView(card: viewModel.cards[index], color: shuffledCardColors[index])
                                     .onTapGesture {
-                                        SoundManager.instance.playSound(named: "flip", withExtension: "aif", volume: 0.35)
+                                        SoundManager.instance.playSound(named: "flip", withExtension: "aif", volume: 0.5)
                                         HapticManager.instance.impact(style: .light)
                                         viewModel.choose(card: viewModel.cards[index])
                                     }
@@ -81,10 +73,8 @@ struct MemoryMatchView: View {
         .navigationTitle(category.title)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            // Create the game state
             viewModel.createMemoryGame(from: category, difficulty: difficulty)
             
-            // Create the shuffled color list
             var colors: [Color] = []
             for i in 0..<difficulty.pairCount {
                 colors.append(cardColorPalette[i % cardColorPalette.count])
@@ -92,19 +82,16 @@ struct MemoryMatchView: View {
             }
             shuffledCardColors = colors.shuffled()
             
-            // Start background music when the game appears
             BackgroundMusicPlayer.instance.start()
         }
         .onDisappear {
-            // Stop background music when the game disappears
             BackgroundMusicPlayer.instance.stop()
         }
         .animation(.default, value: viewModel.isGameOver)
-        .onAppear{BackgroundMusicPlayer.instance.start()}
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
-// Defines the visual appearance and animation of a single card
 struct CardView: View {
     let card: MemoryGameCard
     let color: Color
@@ -112,9 +99,7 @@ struct CardView: View {
 
     var body: some View {
         ZStack {
-            // This inner ZStack contains ONLY the card faces that will flip
             ZStack {
-                // Card Front View
                 Group {
                     let shape = RoundedRectangle(cornerRadius: 12)
                     if colorScheme == .dark {
@@ -129,7 +114,6 @@ struct CardView: View {
                         .rotation3DEffect(.degrees(card.isFaceUp ? 180 : 0), axis: (x: 0, y: 1, z: 0))
                 }
                 
-                // Card Back View
                 Group {
                     let shape = RoundedRectangle(cornerRadius: 12)
                     if colorScheme == .dark {
@@ -143,7 +127,6 @@ struct CardView: View {
             }
             .rotation3DEffect(Angle.degrees(card.isFaceUp ? 180 : 0), axis: (x: 0, y: 1, z: 0))
 
-            // Matched Overlay
             if card.isMatched {
                 RoundedRectangle(cornerRadius: 12).fill(Color.black.opacity(0.4))
                 Image(systemName: "checkmark.circle.fill")
@@ -158,7 +141,6 @@ struct CardView: View {
     }
 }
 
-// A dedicated view for the game completion screen
 struct GameCompletionView: View {
     let moveCount: Int
     let starRating: Int
@@ -168,27 +150,16 @@ struct GameCompletionView: View {
     var body: some View {
         VStack(spacing: 20) {
             Spacer()
-            Text("🎉")
-                .font(.system(size: 100))
-            
-            Text("You Won!")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-            
+            Text("🎉").font(.system(size: 100))
+            Text("You Won!").font(.largeTitle).fontWeight(.bold)
             HStack {
                 ForEach(1...3, id: \.self) { star in
                     Image(systemName: star <= starRating ? "star.fill" : "star")
-                        .foregroundColor(.yellow)
-                        .font(.largeTitle)
+                        .foregroundColor(.yellow).font(.largeTitle)
                 }
             }
-            
-            Text("You finished in \(moveCount) moves.")
-                .font(.title3)
-                .foregroundColor(.secondary)
-            
+            Text("You finished in \(moveCount) moves.").font(.title3).foregroundColor(.secondary)
             Spacer()
-            
             VStack(spacing: 15) {
                 Button(action: onPlayAgain) {
                     Text("Play Again")

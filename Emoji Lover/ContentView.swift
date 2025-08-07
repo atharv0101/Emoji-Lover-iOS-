@@ -12,7 +12,6 @@ struct ContentView: View {
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gear") }
         }
-        // The .onAppear modifier that was here has been REMOVED.
     }
 }
 
@@ -21,3 +20,4 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
+ 

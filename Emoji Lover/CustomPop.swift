@@ -29,11 +29,14 @@ struct CustomPopup<PopupContent: View>: ViewModifier {
                             .fill(Color(.systemBackground))
                     )
                     .shadow(color: .black.opacity(0.3), radius: 20)
-                    .padding(40) // Keeps the pop-up from touching the screen edges
+                    .frame(maxWidth: 400)
+                        .fixedSize(horizontal: false, vertical: true)
+                    .padding(20) // Keeps the pop-up from touching the screen edges
                     .transition(.scale.combined(with: .opacity))
             }
         }
         .animation(.spring(), value: isPresented)
+        .frame(width: 400, height: 800)
     }
 }
 

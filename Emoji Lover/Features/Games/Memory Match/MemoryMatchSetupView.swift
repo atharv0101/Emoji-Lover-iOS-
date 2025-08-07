@@ -8,12 +8,10 @@ struct MemoryMatchSetupView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 40) {
-            
             Text("Game Setup")
                 .font(.largeTitle).bold()
                 .frame(maxWidth: .infinity)
 
-            // --- CATEGORY SELECTION (WITH IMPROVED ARROWS) ---
             VStack(alignment: .leading, spacing: 15) {
                 Text("Choose a Category").font(.title2).bold()
                 
@@ -32,9 +30,7 @@ struct MemoryMatchSetupView: View {
                             }
                         }
                         
-                        // This HStack contains the logic for the arrows
                         HStack {
-                            // Left arrow: Only appears if not the first category
                             if let selected = selectedCategory, let currentIndex = gameCategories.firstIndex(where: { $0.id == selected.id }), currentIndex > 0 {
                                 Button(action: {
                                     let newIndex = currentIndex - 1
@@ -46,7 +42,6 @@ struct MemoryMatchSetupView: View {
                             
                             Spacer()
                             
-                            // Right arrow: Only appears if not the last category
                             if let selected = selectedCategory, let currentIndex = gameCategories.firstIndex(where: { $0.id == selected.id }), currentIndex < gameCategories.count - 1 {
                                 Button(action: {
                                     let newIndex = currentIndex + 1
@@ -57,13 +52,12 @@ struct MemoryMatchSetupView: View {
                             }
                         }
                         .foregroundColor(.accentColor.opacity(0.6))
-                        .padding(.horizontal, -15) // Bring arrows closer to the cards
+                        .padding(.horizontal, -15)
                     }
                     .animation(.default, value: selectedCategory)
                 }
             }
             
-            // --- DIFFICULTY SELECTION (CLEANED UP) ---
             VStack(alignment: .leading, spacing: 15) {
                 Text("Select Difficulty").font(.title2).bold()
                 Picker("Difficulty", selection: $selectedDifficulty) {
@@ -92,7 +86,6 @@ struct MemoryMatchSetupView: View {
     }
 }
 
-// Helper view for the tappable category selection cards
 struct CategorySelectionCard: View {
     let category: LearningCategory
     let isSelected: Bool

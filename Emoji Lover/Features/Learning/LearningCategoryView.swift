@@ -15,22 +15,17 @@ struct LearningCategoryView: View {
     var dragGesture: some Gesture {
         DragGesture()
             .onEnded { value in
-                if value.translation.width < -50 {
-                    handleNext()
-                } else if value.translation.width > 50 {
-                    handlePrevious()
-                }
+                if value.translation.width < -50 { handleNext() }
+                else if value.translation.width > 50 { handlePrevious() }
             }
     }
 
     var body: some View {
         ZStack {
-            // CHANGE: The gesture is now attached to the background view
-            // which covers the entire screen.
             Color.clear
                 .dynamicBackground(for: shuffledItems.isEmpty ? "" : shuffledItems[currentIndex].name)
                 .ignoresSafeArea()
-                .contentShape(Rectangle()) // Ensures the whole area is interactive
+                .contentShape(Rectangle())
                 .gesture(dragGesture)
 
             if isCompleted {
@@ -46,36 +41,33 @@ struct LearningCategoryView: View {
                 .transition(.scale.combined(with: .opacity))
 
             } else {
-                // The VStack no longer has the gesture attached.
-                // We use .allowsHitTesting(false) so that empty parts of the VStack
-                // don't block the gesture from reaching the background.
                 VStack(spacing: 20) {
-                    if !shuffledItems.isEmpty {
-                        ProgressBar(currentValue: currentIndex + 1, totalValue: shuffledItems.count)
-                    }
-
+                    // The old ProgressBar view that was here has been REMOVED.
                     Spacer()
-
-                    Text(title)
-                        .font(.headline)
-                        .foregroundColor(.secondary)
+                    
+                    Text(title).font(.headline).foregroundColor(.secondary)
                     
                     VStack(spacing: 15) {
                         Text(shuffledItems.isEmpty ? "" : shuffledItems[currentIndex].emoji)
                             .font(.system(size: 120))
-
+                        
                         Text(shuffledItems.isEmpty ? "" : shuffledItems[currentIndex].name)
                             .font(.system(size: 44, weight: .bold))
+                        
+                        // --- NEW: The page indicator dots are now here ---
+                        if !shuffledItems.isEmpty {
+                            PageIndicatorView(pageCount: shuffledItems.count, currentPage: currentIndex)
+                                .padding(.top)
+                        }
                     }
                     .transition(.asymmetric(
                         insertion: .move(edge: transitionEdge),
                         removal: .move(edge: transitionEdge == .trailing ? .leading : .trailing)
                     ).combined(with: .opacity))
                     .id(shuffledItems.isEmpty ? UUID() : shuffledItems[currentIndex].id)
-
+                    
                     Spacer()
-
-                    // The button will still be tappable because it's a specific control.
+                    
                     Button(action: {
                         if !isSpeaking, !shuffledItems.isEmpty {
                             isSpeaking = true
@@ -84,72 +76,75 @@ struct LearningCategoryView: View {
                         }
                     }) {
                         Image(systemName: "speaker.wave.2.fill")
-                            .font(.largeTitle)
-                            .padding()
-                            .background(Color.primary.opacity(0.1))
-                            .clipShape(Circle())
-                            .foregroundColor(isSpeaking ? .gray : .accentColor)
+                            .font(.largeTitle).padding().background(Color.primary.opacity(0.1))
+                            .clipShape(Circle()).foregroundColor(isSpeaking ? .gray : .accentColor)
                     }
-                    .disabled(isSpeaking)
-                    .buttonStyle(SpringyButtonStyle())
-                    .padding(.bottom)
+                    .disabled(isSpeaking).buttonStyle(SpringyButtonStyle()).padding(.bottom)
                 }
                 .padding()
             }
+            
+            // Custom Back Button Overlay
+            VStack {
+                HStack {
+                    Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title2.weight(.bold)).foregroundColor(.primary)
+                            .padding().background(.thinMaterial).clipShape(Circle())
+                    }
+                    Spacer()
+                }
+                .padding()
+                Spacer()
+            }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("")
-        .navigationBarBackButtonHidden(true)
-        .onAppear {
-            shuffledItems = items.shuffled()
-        }
+        .navigationBarHidden(true)
+        .onAppear { shuffledItems = items.shuffled() }
+        .toolbar(.hidden, for: .tabBar)
     }
     
     func handleNext() {
         self.transitionEdge = .trailing
         withAnimation(.easeInOut(duration: 0.4)) {
-            if currentIndex < shuffledItems.count - 1 {
-                currentIndex += 1
-            } else {
-                isCompleted = true
-            }
+            if currentIndex < shuffledItems.count - 1 { currentIndex += 1 }
+            else { isCompleted = true }
         }
     }
     
     func handlePrevious() {
         self.transitionEdge = .leading
         withAnimation(.easeInOut(duration: 0.4)) {
-            if currentIndex > 0 {
-                currentIndex -= 1
-            }
+            if currentIndex > 0 { currentIndex -= 1 }
         }
     }
 }
 
-// Helper Views
-// These should be in their own files as we discussed.
+// --- NEW: A view for the page indicator dots ---
+struct PageIndicatorView: View {
+    let pageCount: Int
+    let currentPage: Int
 
-struct ProgressBar: View {
-    let currentValue: Int
-    let totalValue: Int
     var body: some View {
-        GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 6).foregroundColor(.primary.opacity(0.1))
-                RoundedRectangle(cornerRadius: 6)
-                    .foregroundColor(Color.accentColor)
-                    .frame(width: geometry.size.width * (CGFloat(currentValue) / CGFloat(totalValue)))
+        HStack(spacing: 10) {
+            ForEach(0..<pageCount, id: \.self) { index in
+                Circle()
+                    .fill(index == currentPage ? Color.accentColor : Color.primary.opacity(0.2))
+                    .frame(width: 8, height: 8)
+                    .scaleEffect(index == currentPage ? 1.2 : 1.0)
             }
         }
-        .frame(height: 12)
-        .animation(.spring(), value: currentValue)
-        .padding(.horizontal)
+        .animation(.spring(response: 0.4, dampingFraction: 0.6), value: currentPage)
     }
 }
+
+
+// The old ProgressBar struct has been DELETED.
+// CompletionView and SpringyButtonStyle structs remain the same.
 
 struct CompletionView: View {
     var onLearnAgain: () -> Void
     var onChooseAnother: () -> Void
+    
     var body: some View {
         VStack(spacing: 30) {
             Spacer()

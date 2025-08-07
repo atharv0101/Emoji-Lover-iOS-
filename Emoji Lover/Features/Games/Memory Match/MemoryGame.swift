@@ -21,8 +21,8 @@ class MemoryGameViewModel: ObservableObject {
     var starRating: Int {
         guard isGameOver else { return 0 }
         let pairCount = cards.count / 2
-        if moveCount <= pairCount * 2 + 4 { return 3 } //if moveCount <= pairCount * 2 + 2 { return 3 }
-        else if moveCount <= pairCount * 2 { return 2 }//else if moveCount <= pairCount * 3 { return 2 }
+        if moveCount <= pairCount * 2 + 2 { return 3 }
+        else if moveCount <= pairCount * 3 { return 2 }
         else { return 1 }
     }
 
@@ -59,21 +59,19 @@ class MemoryGameViewModel: ObservableObject {
                     self.cards[index1].isMatched = true
                     self.cards[index2].isMatched = true
                     
-                    SoundManager.instance.playSound(named: "match", withExtension: "aif", volume: 0.5)
+                    SoundManager.instance.playSound(named: "match", withExtension: "aif", volume: 0.7)
                     HapticManager.instance.notification(type: .success)
                     
                     self.matchStreak += 1
-                    
-                    // --- NEW: Play different sounds based on the streak combo ---
                     switch self.matchStreak {
+                    case 2:
+                        SoundManager.instance.playSound(named: "streak2", withExtension: "aif", volume: 0.8)
                     case 3:
-                        SoundManager.instance.playSound(named: "streak2", withExtension: "aif", volume: 0.6)
-                    case 5:
-                        SoundManager.instance.playSound(named: "streak3", withExtension: "aif", volume: 0.7)
-                    case 4...: // For streaks of 4 or more, play the highest streak sound
-                        SoundManager.instance.playSound(named: "streak4", withExtension: "aif", volume: 0.8)
+                        SoundManager.instance.playSound(named: "streak3", withExtension: "aif", volume: 0.9)
+                    case 4...:
+                        SoundManager.instance.playSound(named: "streak4", withExtension: "aif", volume: 1.0)
                     default:
-                        break // No streak sound for the first match
+                        break
                     }
                     
                     if self.isGameOver {
@@ -81,9 +79,7 @@ class MemoryGameViewModel: ObservableObject {
                     }
                 }
             } else {
-                // Not a match, reset the streak
                 self.matchStreak = 0
-                
                 let index1 = chosenIndex
                 let index2 = potentialMatchIndex
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
